@@ -10,8 +10,8 @@ let productsData = [];
 let cartData = [];
 
 // Tarjeta de producto en el carrito
-const shoppingCart = (_image, _productName, _price) => {
-    return '<div class="product-card"><img src="' + _image + '" alt="Fjallraven Backpack"><div class="product-info"><p class="product-title">' + _productName + '</p><p class="product-price">' +_price + ' €</p><div class="product-quantity"><button class="decrease-btn">-</button><span class="quantity-value">1</span><button class="increase-btn">+</button></div></div><button class="remove-btn" title="Eliminar" style="">🗑️</button></div>';
+const shoppingCart = (_image, _productName, _price, _quantity) => {
+    return '<div class="product-card"><img src="' + _image + '" alt="Fjallraven Backpack"><div class="product-info"><p class="product-title">' + _productName + '</p><p class="product-price">' +_price + ' €</p><div class="product-quantity"><button class="decrease-btn">-</button><span class="quantity-value">' + _quantity +'</span><button class="increase-btn">+</button></div></div><button class="remove-btn" title="Eliminar" style="">🗑️</button></div>';
 }
 
 // Tarjeta que muestra los productos disponibles
@@ -55,7 +55,7 @@ const obtainCartProducts = (data) => {
 const paintCartShop = () => {
     cartItems.innerHTML = '';
     cartData.forEach(product => {
-        const productHTML = shoppingCart(product.image, product.title, product.price);
+        const productHTML = shoppingCart(product.image, product.title, product.price, product.quantity);
         cartItems.innerHTML += productHTML;
     });
 
@@ -86,7 +86,7 @@ const addClickBtnPopular = (products) => {
                 cartData = cartData.filter(product => product.id !== productsData[idx].id);
             }
             else{
-                cartData.push(products[idx]);
+0<              cartData.push({ ...products[idx], quantity: 1 }); // Si no existe, lo añade con cantidad 1
             }
             
             // Repintar el carrito actualizado
