@@ -5,7 +5,7 @@ const findBtn = document.querySelector('.search__button');
 const searchInput = document.querySelector('.search__input');
 const popularlistItems = document.querySelector('.popular-items');
 const cartItems = document.querySelector('.cart-items');
-
+const cartClearBtn = document.querySelector('.cart-clear-btn');
 let productsData = [];
 let cartData = [];
 
@@ -23,22 +23,31 @@ const popularCart = (_image, _productName, _price) => {
 const popularSelected = (_image, _productName, _price) => {
     return '<div class="product-card"><img src="' + _image + '" alt="Fjallraven Backpack"><div class="product-info"><p class="product-title">' + _productName + '</p><p class="product-price">' +_price + ' €</p><button class="buyBtnRemove" id="buyBtn">Eliminar</button></div></div>';
 }
+const clearCart = () => {
+    cartClearBtn.addEventListener('click', () => {
+        cartData = [];
+        paintCartShop();
+        obtainCartProducts(productsData);
+    });
 
+}
 // Funcion donde tenemos la lista de productos
 // miramos si el elemento del producto esta en el carrito
 // usamos la funcion popularSelected para pintarlo en el html
 // sino, usamos la clase popularCart.
 const obtainCartProducts = (data) => {
     popularlistItems.innerHTML = '';
+    let productHTML = '';
     data.forEach(product => {
         const isInCart = cartData.some(cartProduct => cartProduct.id === product.id);
         if (isInCart) {
-            const productHTML = popularSelected(product.image, product.title, product.price);
-            popularlistItems.innerHTML += productHTML;
+             productHTML = popularSelected(product.image, product.title, product.price);
+            
         } else {
-            const productHTML = popularCart(product.image, product.title, product.price);
-            popularlistItems.innerHTML += productHTML;
+            productHTML = popularCart(product.image, product.title, product.price);
+            
         }
+        popularlistItems.innerHTML += productHTML;  
     });
     addClickBtnPopular(data);
 }
@@ -49,8 +58,24 @@ const paintCartShop = () => {
         const productHTML = shoppingCart(product.image, product.title, product.price);
         cartItems.innerHTML += productHTML;
     });
+
+    // Guardamos en el localStorage los productos del carrito
+    localStorage.setItem('cartData', JSON.stringify(cartData));
+
+    removeFromCartClick();
 }
 
+const removeFromCartClick = () => {
+    const removeBtns = cartItems.querySelectorAll('.remove-btn');
+    removeBtns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+            cartData.splice(idx, 1);
+            paintCartShop();
+            obtainCartProducts(productsData);
+            removeFromCartClick(); // Reasignar eventos después de repintar
+        });
+    });
+}
 const addClickBtnPopular = (products) => {
  // Añadir evento a cada botón "Comprar" de los productos pintados. Como son muchos botones con
     // la misma clase, usamos querySelectorAll y un forEach para añadir el evento a cada uno.
@@ -70,8 +95,16 @@ const addClickBtnPopular = (products) => {
             // Hay que repintar la lista de productos disponibles donde los productos de carrito
             // permita eliminarlos.
             obtainCartProducts(productsData);
+
         });
     });
+}
+
+// Recuperamos del localStorage los productos del carrito
+const savedCart = JSON.parse(localStorage.getItem('cartData'));
+if (savedCart) {
+    cartData = savedCart;
+    paintCartShop();
 }
 
 // Fetch para obtener productos desde la API
@@ -91,3 +124,4 @@ findBtn.addEventListener('click', () => {
     );
     obtainCartProducts(filteredProducts);
 });
+clearCart ();
