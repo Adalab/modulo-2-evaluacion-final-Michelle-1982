@@ -21,8 +21,9 @@ const popularCart = (_image, _productName, _price) => {
 
 // Tarjeta cuando has comprado el producto y te permite quitarlo del carrito
 const popularSelected = (_image, _productName, _price) => {
-    return '<div class="product-card"><img src="' + _image + '" alt="Fjallraven Backpack"><div class="product-info"><p class="product-title">' + _productName + '</p><p class="product-price">' +_price + ' €</p><button class="buyBtnRemove" id="buyBtn">Eliminar</button></div></div>';
+    return '<div class="product-card-selected"><img src="' + _image + '" alt="Fjallraven Backpack"><div class="product-info"><p class="product-title"><b>' + _productName + '</b></p><p class="product-price"><b>' +_price + ' €</b></p><button class="buyBtnRemove" id="buyBtn">Eliminar</button></div></div>';
 }
+
 const clearCart = () => {
     cartClearBtn.addEventListener('click', () => {
         cartData = [];
@@ -63,6 +64,29 @@ const paintCartShop = () => {
     localStorage.setItem('cartData', JSON.stringify(cartData));
 
     removeFromCartClick();
+    increaseQuantity();
+    decreaseQuantity();
+}
+
+const increaseQuantity = () => {
+    const increaseBtns = cartItems.querySelectorAll('.increase-btn');
+    increaseBtns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+            cartData[idx].quantity += 1;
+            paintCartShop();
+        });
+    });
+}
+const decreaseQuantity = () => {
+    const decreaseBtns = cartItems.querySelectorAll('.decrease-btn');
+    decreaseBtns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+            if(cartData[idx].quantity > 1) {
+                cartData[idx].quantity -= 1;
+                paintCartShop();
+            }
+        });
+    });
 }
 
 const removeFromCartClick = () => {
@@ -73,6 +97,7 @@ const removeFromCartClick = () => {
             paintCartShop();
             obtainCartProducts(productsData);
             removeFromCartClick(); // Reasignar eventos después de repintar
+            
         });
     });
 }
