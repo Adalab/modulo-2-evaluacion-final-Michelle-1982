@@ -110,8 +110,8 @@ const addClickBtnPopular = (products) => {
             if(event.target.className === 'buyBtnRemove') {
                 cartData = cartData.filter(product => product.id !== productsData[idx].id);
             }
-            else{
-0<              cartData.push({ ...products[idx], quantity: 1 }); // Si no existe, lo añade con cantidad 1
+            else{   
+                cartData.push({ ...products[idx], quantity: 1 }); // Si no existe, lo añade con cantidad 1
             }
             
             // Repintar el carrito actualizado
@@ -141,6 +141,7 @@ fetch('https://fakestoreapi.com/products')
     })
     .catch(error => console.error('Error fetching products:', error));  
 
+    
 // Evento click para buscar por descripción
 findBtn.addEventListener('click', () => {
     const searchTerm = searchInput.value.toLowerCase();
@@ -149,4 +150,11 @@ findBtn.addEventListener('click', () => {
     );
     obtainCartProducts(filteredProducts);
 });
+
+const searchResetBtn = document.querySelector('.search__reset-button');
+searchResetBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    obtainCartProducts(productsData);
+});
+
 clearCart ();
