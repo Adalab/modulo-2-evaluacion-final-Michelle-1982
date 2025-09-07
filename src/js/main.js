@@ -77,6 +77,7 @@ const increaseQuantity = () => {
         });
     });
 }
+
 const decreaseQuantity = () => {
     const decreaseBtns = cartItems.querySelectorAll('.decrease-btn');
     decreaseBtns.forEach((btn, idx) => {
@@ -141,7 +142,7 @@ fetch('https://fakestoreapi.com/products')
     })
     .catch(error => console.error('Error fetching products:', error));  
 
-    
+
 // Evento click para buscar por descripción
 findBtn.addEventListener('click', () => {
     const searchTerm = searchInput.value.toLowerCase();
